@@ -17,7 +17,7 @@ public class ApiUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).enable(
         SerializationFeature.INDENT_OUTPUT);
 
-    public static HttpResponse<String> postRequest(String url, Map<String, String> payload) throws IOException, InterruptedException {
+    public static HttpResponse<String> postRequest(String url, Map<String, Object> payload) throws IOException, InterruptedException {
         String jsonPayload = objectMapper.writeValueAsString(payload);
 
         HttpRequest request = HttpRequest.newBuilder()

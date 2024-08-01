@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
-@PageTitle("Snake Game Login")
+@PageTitle("Snake Game")
 @Route(value = "users/login", layout = MainLayout.class)
 public class UsersLoginView extends Composite<VerticalLayout> {
 
@@ -56,7 +56,7 @@ public class UsersLoginView extends Composite<VerticalLayout> {
             String email_phone = event.getUsername();
             String password = event.getPassword();
             try{
-                Map<String, String> payload = Map.of(
+                Map<String, Object> payload = Map.of(
                     "email_phone", email_phone,
                     "password", password);
 
