@@ -18,11 +18,11 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 import java.util.ArrayList;
 import java.util.List;
 
-@PageTitle("Users/register")
+@PageTitle("Snake game register")
 @Route(value = "users/register", layout = MainLayout.class)
-public class UsersregisterView extends Composite<VerticalLayout> {
+public class UsersRegisterView extends Composite<VerticalLayout> {
 
-    public UsersregisterView() {
+    public UsersRegisterView() {
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         TextField textField = new TextField();

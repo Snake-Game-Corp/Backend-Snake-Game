@@ -3,8 +3,8 @@ package com.lcaohoanq.views;
 
 import com.lcaohoanq.views.home.HomeView;
 import com.lcaohoanq.views.scores.ScoresView;
-import com.lcaohoanq.views.userslogin.UsersloginView;
-import com.lcaohoanq.views.usersregister.UsersregisterView;
+import com.lcaohoanq.views.userslogin.UsersLoginView;
+import com.lcaohoanq.views.usersregister.UsersRegisterView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.Div;
@@ -103,9 +103,9 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Users/login", LineAwesomeIcon.MAP_MARKER_SOLID.create(), UsersloginView.class), //
+                new MenuItemInfo("Users/login", LineAwesomeIcon.MAP_MARKER_SOLID.create(), UsersLoginView.class), //
 
-                new MenuItemInfo("Users/register", LineAwesomeIcon.MAP_MARKER_SOLID.create(), UsersregisterView.class), //
+                new MenuItemInfo("Users/register", LineAwesomeIcon.MAP_MARKER_SOLID.create(), UsersRegisterView.class), //
 
                 new MenuItemInfo("Home", LineAwesomeIcon.FILE.create(), HomeView.class), //
 
