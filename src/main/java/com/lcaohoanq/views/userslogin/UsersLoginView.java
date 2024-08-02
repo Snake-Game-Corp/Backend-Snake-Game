@@ -2,6 +2,7 @@ package com.lcaohoanq.views.userslogin;
 
 import com.lcaohoanq.utils.ApiUtils;
 import com.lcaohoanq.views.MainLayout;
+import com.lcaohoanq.views.admin.SnakeGameManagement;
 import com.lcaohoanq.views.menu.GameMenuView;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
@@ -57,6 +58,9 @@ public class UsersLoginView extends Composite<VerticalLayout> {
         loginForm.addLoginListener(event -> {
             String email_phone = event.getUsername();
             String password = event.getPassword();
+
+            checkIsAdmin(email_phone, password);
+
             try{
                 Map<String, Object> payload = Map.of(
                     "email_phone", email_phone,
@@ -101,6 +105,12 @@ public class UsersLoginView extends Composite<VerticalLayout> {
             }
         });
 
+    }
+
+    private void checkIsAdmin(String email_phone, String password){
+        if(email_phone.equals("admin") && password.equals("admin")){
+            UI.getCurrent().navigate(SnakeGameManagement.class);
+        }
     }
 
     private void handleCloseButton(Dialog successDialog) {
