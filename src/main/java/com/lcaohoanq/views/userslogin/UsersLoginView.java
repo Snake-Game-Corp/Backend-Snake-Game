@@ -30,15 +30,15 @@ public class UsersLoginView extends Composite<VerticalLayout> {
         LoginForm loginForm = new LoginForm();
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
-        getContent().setJustifyContentMode(JustifyContentMode.START);
+        getContent().setJustifyContentMode(JustifyContentMode.CENTER);
         getContent().setAlignItems(Alignment.CENTER);
         layoutColumn2.setWidthFull();
         getContent().setFlexGrow(1.0, layoutColumn2);
         layoutColumn2.setWidth("100%");
         layoutColumn2.setMaxWidth("800px");
         layoutColumn2.setHeight("min-content");
-        layoutColumn2.setJustifyContentMode(JustifyContentMode.START);
-        layoutColumn2.setAlignItems(Alignment.START);
+        layoutColumn2.setJustifyContentMode(JustifyContentMode.CENTER);
+        layoutColumn2.setAlignItems(Alignment.CENTER);
         getContent().add(layoutColumn2);
         layoutColumn2.add(loginForm);
 
