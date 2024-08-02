@@ -31,7 +31,7 @@ public class ForgotPasswordView extends Composite<VerticalLayout> {
     public ForgotPasswordView() {
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
-        getContent().setJustifyContentMode(JustifyContentMode.START);
+        getContent().setJustifyContentMode(JustifyContentMode.CENTER);
         getContent().setAlignItems(Alignment.CENTER);
         initComponent();
         doAction();
@@ -41,7 +41,7 @@ public class ForgotPasswordView extends Composite<VerticalLayout> {
         title.setText("Forgot Password");
         title.setWidth("max-content");
 
-        textField_Email_Phone.setWidth("50%");
+        textField_Email_Phone.setWidth("30%");
         button_Send.setWidth("min-content");
 
         layoutColumn2.add(title, textField_Email_Phone, button_Send);
