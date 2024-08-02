@@ -41,14 +41,14 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
     private TextField textField_First_Name = new TextField("First Name");
     private TextField textField_Last_Name = new TextField("Last Name");
     private PasswordField textField_Password = new PasswordField("Password");
-    private PasswordField textField_Address = new PasswordField("Address");
+    private TextField textField_Address = new TextField("Address");
     private DatePicker datePicker_Birthday = new DatePicker("Birthday");
 
     //chose gender: male, female, others
     private ComboBox<String> select_G = new ComboBox<>("Gender");
 
 
-    private TextField textField_Confirmed_Password = new TextField("Confirmed password");
+    private PasswordField textField_Confirmed_Password = new PasswordField("Confirmed password");
     private FormLayout formLayout2Col = new FormLayout();
     private HorizontalLayout layoutRow = new HorizontalLayout();
     private VerticalLayout layoutColumn2 = new VerticalLayout();
@@ -78,6 +78,7 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
         datePicker_Birthday.setWidth("100%");
         select_G.setWidth("100%");
         select_G.setItems("MALE", "FEMALE", "OTHER");
+        select_G.setValue("MALE"); //default value
 
         layoutRow.setWidthFull();
         layoutRow.addClassName(Gap.MEDIUM);
@@ -92,6 +93,7 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
 
         button_Save.setWidth("min-content");
         button_Save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        button_Save.getStyle().set("cursor", "pointer");
 
         button_Cancel.setWidth("min-content");
 
@@ -107,93 +109,217 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
         formLayout2Col.add(textField_Last_Name);
         formLayout2Col.add(textField_Address);
         formLayout2Col.add(datePicker_Birthday);
-        formLayout2Col.add(select_G);
         formLayout2Col.add(textField_Password);
         formLayout2Col.add(textField_Confirmed_Password);
+        formLayout2Col.add(select_G);
         layoutColumn2.add(layoutRow);
         layoutRow.add(button_Save);
         layoutRow.add(button_Cancel);
     }
 
-    private void doAction() {
-        button_Save.addClickListener(event -> {
-            String email_phone = textField_Email_Phone.getValue();
-            String first_name = textField_First_Name.getValue();
-            String last_name = textField_Last_Name.getValue();
-            String password = textField_Password.getValue();
-            String address = textField_Address.getValue();
-            LocalDateTime birthday = datePicker_Birthday.getValue().atStartOfDay();
-            String gender = select_G.getValue();
-            String confirmed_password = textField_Confirmed_Password.getValue();
+    private void validateFields(String fieldName) {
+        String emailPhone = textField_Email_Phone.getValue();
+        String firstName = textField_First_Name.getValue();
+        String lastName = textField_Last_Name.getValue();
+        String password = textField_Password.getValue();
+        String address = textField_Address.getValue();
+        LocalDateTime birthday =
+            datePicker_Birthday.getValue() != null ? datePicker_Birthday.getValue().atStartOfDay()
+                : null;
+        String gender = select_G.getValue();
+        String confirmedPassword = textField_Confirmed_Password.getValue();
 
-            UserRegisterRequest user = new UserRegisterRequest();
-            user.setId(-1L);
-            user.setFirstName(first_name);
-            user.setLastName(last_name);
-            if(checkTypeAccount(email_phone)){
-                user.setEmail(email_phone);
-                user.setPhone(null);
-            }else{
-                user.setEmail(null);
-                user.setPhone(email_phone);
-            }
-            user.setPassword(password);
-            user.setAddress(address);
-            user.setBirthday(birthday.toString());
-            user.setGender(gender);
-            user.setRole("USER");
-            user.setStatus("UNVERIFIED");
-            user.setCreated_at(LocalDate.now().toString());
-            user.setUpdated_at(LocalDate.now().toString());
-            user.setAvatar_url(null);
-
-
-            Map<String, Object> payload = new HashMap<>();
-            payload.put("id", user.getId());
-            payload.put("email", user.getEmail());
-            payload.put("phone", user.getPhone());
-            payload.put("firstName", user.getFirstName());
-            payload.put("lastName", user.getLastName());
-            payload.put("password", user.getPassword());
-            payload.put("address", user.getAddress());
-            payload.put("birthday", user.getBirthday());
-            payload.put("gender", user.getGender());
-            payload.put("role", user.getRole());
-            payload.put("status", user.getStatus());
-            payload.put("created_at", user.getCreated_at());
-            payload.put("updated_at", user.getUpdated_at());
-            payload.put("avatar_url", user.getAvatar_url());
-
-            try{
-                HttpResponse<String> response = ApiUtils.postRequest(
-                    "http://localhost:8081/users/register", payload);
-                Dialog dialog;
-                switch (response.statusCode()) {
-                    case 200:
-                        dialog = new Dialog();
-                        dialog.add(new H3("Register successfully"));
-                        dialog.open();
-                        break;
-                    case 400:
-                        dialog = new Dialog();
-                        dialog.add(new H3("Either email or phone must be provided"));
-                        dialog.open();
-                        break;
-                    default:
-                        dialog = new Dialog();
-                        dialog.add(new H3("An error occurred while creating a new user"));
-                        dialog.open();
-                        break;
+        switch (fieldName) {
+            case "emailPhone":
+                if(textField_Email_Phone.isEmpty()){
+                    textField_Email_Phone.setErrorMessage("Email or Phone Number is required");
+                    textField_Email_Phone.setInvalid(true);
+                }else {
+                    if(checkTypeAccount(emailPhone)){
+                        if (!emailPhone.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                            textField_Email_Phone.setErrorMessage("Invalid email format");
+                            textField_Email_Phone.setInvalid(true);
+                        } else {
+                            textField_Email_Phone.setInvalid(false);
+                        }
+                    }else{
+                        if (!emailPhone.matches("(84|0[3|5|7|8|9])[0-9]{8}")) {
+                            textField_Email_Phone.setErrorMessage("Invalid phone number format");
+                            textField_Email_Phone.setInvalid(true);
+                        }else{
+                            textField_Email_Phone.setInvalid(false);
+                        }
+                    }
                 }
-            }catch (Exception e){
-                System.out.println("An error occurred while creating a new user: " + e.getMessage());
+                break;
+            case "firstName":
+                textField_First_Name.setInvalid(false);
+                if (firstName.isEmpty()) {
+                    textField_First_Name.setErrorMessage("First name is required");
+                    textField_First_Name.setInvalid(true);
+                }
+                break;
+            case "lastName":
+                textField_Last_Name.setInvalid(false);
+                if(lastName.isEmpty()){
+                    textField_Last_Name.setErrorMessage("Last name is required");
+                    textField_Last_Name.setInvalid(true);
+                }
+                break;
+            case "password":
+                textField_Password.setInvalid(false);
+                if(password.isEmpty()){
+                    textField_Password.setErrorMessage("Password is required");
+                    textField_Password.setInvalid(true);
+                }
+                break;
+            case "confirmedPassword":
+                textField_Confirmed_Password.setInvalid(false);
+                if(confirmedPassword.isEmpty()){
+                    textField_Confirmed_Password.setErrorMessage("Confirmed password is required");
+                    textField_Confirmed_Password.setInvalid(true);
+                } else if(!confirmedPassword.equals(password)){
+                    textField_Confirmed_Password.setErrorMessage("Confirmed password does not match");
+                    textField_Confirmed_Password.setInvalid(true);
+                }
+                break;
+            case "address":
+                textField_Address.setInvalid(false);
+                if(address.isEmpty()){
+                    textField_Address.setErrorMessage("Address is required");
+                    textField_Address.setInvalid(true);
+                }
+                break;
+            case "birthday":
+                if(birthday == null){
+                    datePicker_Birthday.setInvalid(true);
+                    datePicker_Birthday.setErrorMessage("Birthday is required");
+                } else {
+                    datePicker_Birthday.setInvalid(false);
+                }
+                break;
+            case "gender":
+                select_G.setInvalid(false);
+                break;
+        }
+    }
+
+    private void doAction() {
+        textField_Email_Phone.addValueChangeListener(event -> validateFields("emailPhone"));
+        textField_First_Name.addValueChangeListener(event -> validateFields("firstName"));
+        textField_Last_Name.addValueChangeListener(event -> validateFields("lastName"));
+        textField_Password.addValueChangeListener(event -> validateFields("password"));
+        textField_Confirmed_Password.addValueChangeListener(
+            event -> validateFields("confirmedPassword"));
+        textField_Address.addValueChangeListener(event -> validateFields("address"));
+        datePicker_Birthday.addValueChangeListener(event -> validateFields("birthday"));
+        select_G.addValueChangeListener(event -> validateFields("gender"));
+
+        button_Save.addClickListener(event -> {
+            validateAllFields();
+            if (isFormValid()) {
+                try {
+                    HttpResponse<String> response = ApiUtils.postRequest(
+                        "http://localhost:8081/users/register", fetchData());
+                    Dialog dialog;
+                    switch (response.statusCode()) {
+                        case 200:
+                            dialog = new Dialog();
+                            dialog.add(new H3("Register successfully"));
+                            dialog.open();
+                            break;
+                        case 400:
+                            dialog = new Dialog();
+                            dialog.add(new H3("Either email or phone must be provided"));
+                            dialog.open();
+                            break;
+                        default:
+                            dialog = new Dialog();
+                            dialog.add(new H3("An error occurred while creating a new user"));
+                            dialog.open();
+                            break;
+                    }
+                } catch (Exception e) {
+                    System.out.println(
+                        "An error occurred while creating a new user: " + e.getMessage());
+                }
             }
-
-
         });
     }
 
-    private boolean checkTypeAccount(String email_phone){
+    private Map<String, Object> fetchData(){
+        String email_phone = textField_Email_Phone.getValue();
+        String first_name = textField_First_Name.getValue();
+        String last_name = textField_Last_Name.getValue();
+        String password = textField_Password.getValue();
+        String address = textField_Address.getValue();
+        LocalDateTime birthday = datePicker_Birthday.getValue().atStartOfDay();
+        String gender = select_G.getValue();
+        String confirmed_password = textField_Confirmed_Password.getValue();
+
+        UserRegisterRequest user = new UserRegisterRequest();
+        user.setId(-1L);
+        user.setFirstName(first_name);
+        user.setLastName(last_name);
+        if (checkTypeAccount(email_phone)) {
+            user.setEmail(email_phone);
+            user.setPhone(null);
+        } else {
+            user.setEmail(null);
+            user.setPhone(email_phone);
+        }
+        user.setPassword(password);
+        user.setAddress(address);
+        user.setBirthday(birthday.toString());
+        user.setGender(gender);
+        user.setRole("USER");
+        user.setStatus("UNVERIFIED");
+        user.setCreated_at(LocalDate.now().toString());
+        user.setUpdated_at(LocalDate.now().toString());
+        user.setAvatar_url(null);
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", user.getId());
+        payload.put("email", user.getEmail());
+        payload.put("phone", user.getPhone());
+        payload.put("firstName", user.getFirstName());
+        payload.put("lastName", user.getLastName());
+        payload.put("password", user.getPassword());
+        payload.put("address", user.getAddress());
+        payload.put("birthday", user.getBirthday());
+        payload.put("gender", user.getGender());
+        payload.put("role", user.getRole());
+        payload.put("status", user.getStatus());
+        payload.put("created_at", user.getCreated_at());
+        payload.put("updated_at", user.getUpdated_at());
+        payload.put("avatar_url", user.getAvatar_url());
+
+        return payload;
+    }
+
+    private void validateAllFields() {
+        validateFields("emailPhone");
+        validateFields("firstName");
+        validateFields("lastName");
+        validateFields("password");
+        validateFields("confirmedPassword");
+        validateFields("address");
+        validateFields("birthday");
+        validateFields("gender");
+    }
+
+    private boolean isFormValid() {
+        return !textField_Email_Phone.isInvalid() &&
+            !textField_First_Name.isInvalid() &&
+            !textField_Last_Name.isInvalid() &&
+            !textField_Password.isInvalid() &&
+            !textField_Confirmed_Password.isInvalid() &&
+            !textField_Address.isInvalid() &&
+            (datePicker_Birthday.getValue() != null) &&
+            (select_G.getValue() != null);
+    }
+
+    private boolean checkTypeAccount(String email_phone) {
         return email_phone.contains("@");
     }
 
