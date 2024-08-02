@@ -104,15 +104,15 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Users/login", LineAwesomeIcon.MAP_MARKER_SOLID.create(), UsersLoginView.class), //
+                new MenuItemInfo("Home", LineAwesomeIcon.HOUSE_DAMAGE_SOLID.create(), HomeView.class), //
 
-                new MenuItemInfo("Users/register", LineAwesomeIcon.MAP_MARKER_SOLID.create(), UsersRegisterView.class), //
+                new MenuItemInfo("Login", LineAwesomeIcon.KEY_SOLID.create(), UsersLoginView.class), //
 
-                new MenuItemInfo("Home", LineAwesomeIcon.FILE.create(), HomeView.class), //
+                new MenuItemInfo("Register", LineAwesomeIcon.KEY_SOLID.create(), UsersRegisterView.class), //
 
-                new MenuItemInfo("Scores", LineAwesomeIcon.FILE.create(), ScoresView.class), //
+                new MenuItemInfo("Forgot Password", LineAwesomeIcon.SAD_CRY.create(), ForgotPasswordView.class), //
 
-                new MenuItemInfo("Forgot Password", LineAwesomeIcon.FILE.create(), ForgotPasswordView.class), //
+                new MenuItemInfo("Scores", LineAwesomeIcon.LIST_SOLID.create(), ScoresView.class), //
         };
     }
 
