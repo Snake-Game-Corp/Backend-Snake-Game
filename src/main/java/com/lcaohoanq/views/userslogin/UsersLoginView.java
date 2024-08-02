@@ -2,7 +2,9 @@ package com.lcaohoanq.views.userslogin;
 
 import com.lcaohoanq.utils.ApiUtils;
 import com.lcaohoanq.views.MainLayout;
+import com.lcaohoanq.views.menu.GameMenuView;
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -67,7 +69,7 @@ public class UsersLoginView extends Composite<VerticalLayout> {
                     case 200:
                         Dialog successDialog = new Dialog();
 
-                        Button closeButton = new Button("Close", e -> successDialog.close());
+                        Button closeButton = new Button("Close", e -> handleCloseButton(successDialog));
                         closeButton.getStyle().set("background-color", "lightblue");
                         closeButton.getStyle().set("align-items", "center");
 
@@ -99,5 +101,10 @@ public class UsersLoginView extends Composite<VerticalLayout> {
             }
         });
 
+    }
+
+    private void handleCloseButton(Dialog successDialog) {
+        successDialog.close();
+        UI.getCurrent().navigate(GameMenuView.class);
     }
 }

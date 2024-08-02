@@ -3,6 +3,7 @@ package com.lcaohoanq.views;
 
 import com.lcaohoanq.views.forgotpassword.ForgotPasswordView;
 import com.lcaohoanq.views.home.HomeView;
+import com.lcaohoanq.views.menu.GameMenuView;
 import com.lcaohoanq.views.scores.ScoresView;
 import com.lcaohoanq.views.userslogin.UsersLoginView;
 import com.lcaohoanq.views.usersregister.UsersRegisterView;
@@ -111,6 +112,8 @@ public class MainLayout extends AppLayout {
                 new MenuItemInfo("Register", LineAwesomeIcon.KEY_SOLID.create(), UsersRegisterView.class), //
 
                 new MenuItemInfo("Forgot Password", LineAwesomeIcon.SAD_CRY.create(), ForgotPasswordView.class), //
+
+                new MenuItemInfo("Game Menu", LineAwesomeIcon.GAMEPAD_SOLID.create(), GameMenuView.class), //
 
                 new MenuItemInfo("Scores", LineAwesomeIcon.LIST_SOLID.create(), ScoresView.class), //
         };
