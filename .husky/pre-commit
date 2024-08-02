@@ -1,1 +1,4 @@
+#!/bin/sh
+
+# Run tests
 mvn clean test
