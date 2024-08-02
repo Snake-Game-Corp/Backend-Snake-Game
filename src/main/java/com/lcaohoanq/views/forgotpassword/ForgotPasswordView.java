@@ -1,0 +1,126 @@
+package com.lcaohoanq.views.forgotpassword;
+
+import com.lcaohoanq.constant.ApiConstant;
+import com.lcaohoanq.utils.ApiUtils;
+import com.lcaohoanq.views.MainLayout;
+import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import java.io.IOException;
+import java.net.http.HttpResponse;
+
+@PageTitle("Forgot Password")
+@Route(value = "forgot-password", layout = MainLayout.class)
+public class ForgotPasswordView extends Composite<VerticalLayout> {
+
+    private H3 title = new H3();
+    private TextField textField_Email_Phone = new TextField("Email or Phone Number");
+    private Button button_Send = new Button("Send");
+    private VerticalLayout layoutRow = new VerticalLayout();
+    private VerticalLayout layoutColumn2 = new VerticalLayout();
+
+    public ForgotPasswordView() {
+        getContent().setWidth("100%");
+        getContent().getStyle().set("flex-grow", "1");
+        getContent().setJustifyContentMode(JustifyContentMode.START);
+        getContent().setAlignItems(Alignment.CENTER);
+        initComponent();
+        doAction();
+    }
+
+    private void initComponent(){
+        title.setText("Forgot Password");
+        title.setWidth("max-content");
+
+        textField_Email_Phone.setWidth("50%");
+        button_Send.setWidth("min-content");
+
+        layoutColumn2.add(title, textField_Email_Phone, button_Send);
+        layoutColumn2.setAlignItems(Alignment.CENTER);
+        layoutColumn2.setJustifyContentMode(JustifyContentMode.START);
+        layoutColumn2.setPadding(true);
+        layoutColumn2.setSpacing(true);
+
+        layoutRow.add(layoutColumn2);
+        layoutRow.setAlignItems(Alignment.CENTER);
+        layoutRow.setJustifyContentMode(JustifyContentMode.START);
+        layoutRow.setPadding(true);
+        layoutRow.setSpacing(true);
+
+        getContent().add(layoutRow);
+    }
+
+    private void doAction(){
+        button_Send.addClickListener(event -> {
+            if (textField_Email_Phone.isEmpty()) {
+                Notification.show("Email or Phone Number is required");
+            } else {
+                String url = ApiConstant.BASE_URL + "/forgot-password?email_phone=" + textField_Email_Phone.getValue();
+
+                try {
+                    HttpResponse<String> response = ApiUtils.getRequest(url);
+
+                    System.out.println(response.body());
+
+                    String otpExtractFromResponse = response.body().substring(38,44);
+
+                    switch (response.statusCode()) {
+                        case 200:
+                            Notification.show("An email has been sent to your email address. Please check your email to reset your password.");
+                            showOtpDialog(otpExtractFromResponse);
+                            break;
+                        case 400:
+                            Notification.show("Email or Phone Number not found");
+                            break;
+                        default:
+                            Notification.show("Failed to send email");
+                            break;
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+    }
+
+    private void showOtpDialog(String extractOtp) {
+        Dialog otpDialog = new Dialog();
+        otpDialog.setModal(true);
+        otpDialog.setDraggable(false);
+        otpDialog.setResizable(false);
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        TextField otpField = new TextField("Enter OTP");
+        Button submitButton = new Button("Submit");
+
+        submitButton.addClickListener(e -> {
+            String otp = otpField.getValue();
+            if(otp.equals(extractOtp)){
+                Notification.show("OTP Submitted: " + otp);
+                otpDialog.close();
+                UI.getCurrent().navigate("reset-password");
+            } else {
+                Notification.show("Invalid OTP");
+            }
+            otpDialog.close();
+        });
+
+        dialogLayout.add(otpField, submitButton);
+        otpDialog.add(dialogLayout);
+        otpDialog.open();
+    }
+
+}

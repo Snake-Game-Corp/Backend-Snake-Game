@@ -1,6 +1,7 @@
 package com.lcaohoanq.views;
 
 
+import com.lcaohoanq.views.forgotpassword.ForgotPasswordView;
 import com.lcaohoanq.views.home.HomeView;
 import com.lcaohoanq.views.scores.ScoresView;
 import com.lcaohoanq.views.userslogin.UsersLoginView;
@@ -111,6 +112,7 @@ public class MainLayout extends AppLayout {
 
                 new MenuItemInfo("Scores", LineAwesomeIcon.FILE.create(), ScoresView.class), //
 
+                new MenuItemInfo("Forgot Password", LineAwesomeIcon.FILE.create(), ForgotPasswordView.class), //
         };
     }
 
