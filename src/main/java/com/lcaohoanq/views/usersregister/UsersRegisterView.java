@@ -1,6 +1,7 @@
 package com.lcaohoanq.views.usersregister;
 
 import com.lcaohoanq.utils.ApiUtils;
+import com.lcaohoanq.utils.ValidateUtils;
 import com.lcaohoanq.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -135,7 +136,7 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
                     textField_Email_Phone.setErrorMessage("Email or Phone Number is required");
                     textField_Email_Phone.setInvalid(true);
                 }else {
-                    if(checkTypeAccount(emailPhone)){
+                    if(ValidateUtils.checkTypeAccount(emailPhone)){
                         if (!emailPhone.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                             textField_Email_Phone.setErrorMessage("Invalid email format");
                             textField_Email_Phone.setInvalid(true);
@@ -261,7 +262,7 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
         user.setId(-1L);
         user.setFirstName(first_name);
         user.setLastName(last_name);
-        if (checkTypeAccount(email_phone)) {
+        if (ValidateUtils.checkTypeAccount(email_phone)) {
             user.setEmail(email_phone);
             user.setPhone(null);
         } else {
@@ -317,10 +318,6 @@ public class UsersRegisterView extends Composite<VerticalLayout> {
             !textField_Address.isInvalid() &&
             (datePicker_Birthday.getValue() != null) &&
             (select_G.getValue() != null);
-    }
-
-    private boolean checkTypeAccount(String email_phone) {
-        return email_phone.contains("@");
     }
 
     record SampleItem(String value, String label, Boolean disabled) {

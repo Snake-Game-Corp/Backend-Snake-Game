@@ -18,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -79,6 +80,8 @@ public class UsersLoginView extends Composite<VerticalLayout> {
 
                         successDialog.add(new H3("Login Successful!"), new Div(closeButton));
                         successDialog.open();
+
+                        VaadinSession.getCurrent().setAttribute("user", email_phone);
                         break;
                     case 400:
                         //Notification.show("Login failed", 3000, Notification.Position.MIDDLE);

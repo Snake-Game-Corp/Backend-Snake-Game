@@ -1,8 +1,12 @@
 package com.lcaohoanq.views.forgotpassword;
 
 import com.lcaohoanq.constant.ApiConstant;
+import com.lcaohoanq.models.User;
 import com.lcaohoanq.utils.ApiUtils;
+import com.lcaohoanq.utils.ValidateUtils;
 import com.lcaohoanq.views.MainLayout;
+import com.lcaohoanq.views.resetpassword.ResetPasswordView;
+import com.lcaohoanq.views.userslogin.UsersLoginView;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -15,11 +19,16 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import lombok.Getter;
+import lombok.Setter;
 
 @PageTitle("Forgot Password")
 @Route(value = "forgot-password", layout = MainLayout.class)
+@Getter
+@Setter
 public class ForgotPasswordView extends Composite<VerticalLayout> {
 
     private H3 title = new H3();
@@ -27,6 +36,7 @@ public class ForgotPasswordView extends Composite<VerticalLayout> {
     private Button button_Send = new Button("Send");
     private VerticalLayout layoutRow = new VerticalLayout();
     private VerticalLayout layoutColumn2 = new VerticalLayout();
+    private User user = new User();
 
     public ForgotPasswordView() {
         getContent().setWidth("100%");
@@ -66,6 +76,12 @@ public class ForgotPasswordView extends Composite<VerticalLayout> {
             } else {
                 String url = ApiConstant.BASE_URL + "/forgot-password?email_phone=" + textField_Email_Phone.getValue();
 
+                if(ValidateUtils.checkTypeAccount(textField_Email_Phone.getValue())){
+                    user.setEmail(textField_Email_Phone.getValue());
+                } else{
+                    user.setPhone(textField_Email_Phone.getValue());
+                }
+
                 try {
                     HttpResponse<String> response = ApiUtils.getRequest(url);
 
@@ -76,6 +92,7 @@ public class ForgotPasswordView extends Composite<VerticalLayout> {
                     switch (response.statusCode()) {
                         case 200:
                             Notification.show("An email has been sent to your email address. Please check your email to reset your password.");
+                            VaadinSession.getCurrent().setAttribute("userRequiredForgotPassword", user);
                             showOtpDialog(otpExtractFromResponse);
                             break;
                         case 400:
@@ -109,9 +126,9 @@ public class ForgotPasswordView extends Composite<VerticalLayout> {
         submitButton.addClickListener(e -> {
             String otp = otpField.getValue();
             if(otp.equals(extractOtp)){
-                Notification.show("OTP Submitted: " + otp);
+                Notification.show("OTP Submitted Successfully");
                 otpDialog.close();
-                UI.getCurrent().navigate("reset-password");
+                UI.getCurrent().navigate(ResetPasswordView.class);
             } else {
                 Notification.show("Invalid OTP");
             }

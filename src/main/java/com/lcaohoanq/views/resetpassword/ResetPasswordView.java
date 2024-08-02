@@ -1,6 +1,11 @@
 package com.lcaohoanq.views.resetpassword;
 
+import com.lcaohoanq.constant.ApiConstant;
+import com.lcaohoanq.models.User;
+import com.lcaohoanq.utils.ApiUtils;
+import com.lcaohoanq.utils.PBKDF2;
 import com.lcaohoanq.views.MainLayout;
+import com.lcaohoanq.views.forgotpassword.ForgotPasswordView;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
@@ -11,9 +16,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+import java.io.IOException;
+import java.net.http.HttpResponse;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("Reset Password")
-@Route(value = "reset-password", layout = MainLayout.class)
+@Route(value = "/users/updatePassword", layout = MainLayout.class)
 public class ResetPasswordView extends Composite<VerticalLayout> {
 
     private H3 title = new H3();
@@ -69,6 +79,37 @@ public class ResetPasswordView extends Composite<VerticalLayout> {
             if (textField_New_Password.getValue().equals(textField_Confirmed_Password.getValue())) {
                 // Handle the API call to reset the password
                 Notification.show("Password reset successfully");
+                User user = (User) VaadinSession.getCurrent().getAttribute("userRequiredForgotPassword");
+                String data = user.getEmail() != null ? user.getEmail() : user.getPhone();
+
+                String url = ApiConstant.BASE_URL + "/users/updatePassword";
+
+                Map<String, Object> payload = Map.of(
+                    "identifier", data,
+                    "newPassword", new PBKDF2().hash(textField_New_Password.getValue().toCharArray())
+                );
+
+                System.out.println(payload);
+
+                try {
+                    HttpResponse<String> response = ApiUtils.postRequest(url, payload);
+
+                    switch(response.statusCode()) {
+                        case 200:
+                            Notification.show("Password reset successfully");
+                            VaadinSession.getCurrent().setAttribute("userRequiredForgotPassword", null);
+                            button_Update.setEnabled(false);
+                            break;
+                        case 400:
+                            Notification.show("Password reset failed");
+                            break;
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
             } else {
                 Notification.show("Passwords do not match");
             }

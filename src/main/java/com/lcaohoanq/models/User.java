@@ -5,9 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lcaohoanq.enums.UserGenderEnum;
 import com.lcaohoanq.enums.UserRoleEnum;
 import com.lcaohoanq.enums.UserStatusEnum;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
 public class User {
     @JsonProperty("id")
     private Long id;
