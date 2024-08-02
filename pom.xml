@@ -95,6 +95,12 @@
             <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.dathin/jhusky -->
+        <dependency>
+            <groupId>io.github.dathin</groupId>
+            <artifactId>jhusky</artifactId>
+            <version>1.0.9</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -117,6 +123,13 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>io.github.dathin</groupId>
+                <artifactId>jhusky</artifactId>
+                <version>1.0.9</version> <!--  Currently this is the latest version  -->
+            </plugin>
+
         </plugins>
     </build>
 
